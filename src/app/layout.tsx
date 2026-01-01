@@ -1,12 +1,20 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Outfit, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
+import { SmoothScrollProvider } from "@/components/providers/smooth-scroll";
 import { APP_NAME, APP_DESCRIPTION } from "@/lib/constants";
 
-const inter = Inter({
+const outfit = Outfit({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-outfit",
+  display: "swap",
+});
+
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  variable: "--font-playfair",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -15,7 +23,7 @@ export const metadata: Metadata = {
     template: `%s | ${APP_NAME}`,
   },
   description: APP_DESCRIPTION,
-  keywords: ["real estate", "property", "Nigeria", "rent", "buy", "snagging"],
+  keywords: ["real estate", "property", "Nigeria", "rent", "buy", "snagging", "luxury homes"],
 };
 
 export default function RootLayout({
@@ -24,10 +32,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${inter.variable} font-sans antialiased`}>
-        {children}
-        <Toaster />
+    <html lang="en" className="dark">
+      <body className={`${outfit.variable} ${playfair.variable} antialiased`}>
+        <SmoothScrollProvider>
+          {children}
+          <Toaster />
+        </SmoothScrollProvider>
       </body>
     </html>
   );

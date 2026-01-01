@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Menu, User } from "lucide-react";
 import { useUser } from "@/hooks/use-user";
@@ -12,13 +13,21 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 export function Header() {
   const { user, profile, signOut } = useUser();
   const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const { scrollY } = useScroll();
+
+  useEffect(() => {
+    return scrollY.on("change", (latest) => {
+      setScrolled(latest > 50);
+    });
+  }, [scrollY]);
 
   const handleSignOut = async () => {
     await signOut();
@@ -33,27 +42,61 @@ export function Header() {
   ];
 
   return (
-    <header className="border-b bg-white sticky top-0 z-50">
+    <motion.header
+      className="fixed w-full z-50 glass border-b transition-all duration-300"
+      style={{
+        borderColor: scrolled ? "hsl(var(--border))" : "transparent",
+      }}
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+    >
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
+        <motion.div
+          className="flex items-center justify-between transition-all duration-300"
+          animate={{ height: scrolled ? 64 : 80 }}
+        >
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">E</span>
-            </div>
-            <span className="font-bold text-xl hidden sm:inline">Expert Listing</span>
+          <Link href="/" className="flex items-center space-x-2 group">
+            <motion.div
+              className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center relative overflow-hidden"
+              whileHover={{ scale: 1.05 }}
+              transition={{ duration: 0.2 }}
+            >
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-br from-emerald-400 to-emerald-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                initial={false}
+              />
+              <span className="text-white font-bold text-xl relative z-10">E</span>
+              <motion.div
+                className="absolute inset-0 glow-emerald opacity-0 group-hover:opacity-100"
+                transition={{ duration: 0.3 }}
+              />
+            </motion.div>
+            <span className="font-bold text-xl hidden sm:inline bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">
+              Expert Listing
+            </span>
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-6">
-            {navLinks.map((link) => (
-              <Link
+          <nav className="hidden md:flex items-center space-x-8">
+            {navLinks.map((link, index) => (
+              <motion.div
                 key={link.href}
-                href={link.href}
-                className="text-sm font-medium text-slate-700 hover:text-slate-900 transition-colors"
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1, duration: 0.5 }}
               >
-                {link.label}
-              </Link>
+                <Link
+                  href={link.href}
+                  className="relative text-sm font-medium text-slate-300 hover:text-white transition-colors group"
+                >
+                  {link.label}
+                  <motion.span
+                    className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-emerald-500 to-gold group-hover:w-full transition-all duration-300"
+                  />
+                </Link>
+              </motion.div>
             ))}
           </nav>
 
@@ -62,7 +105,14 @@ export function Header() {
             {user ? (
               <>
                 <Link href="/dashboard/listings/new">
-                  <Button variant="outline">List Property</Button>
+                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                    <Button 
+                      variant="outline" 
+                      className="border-emerald-500/30 hover:border-emerald-500 hover:bg-emerald-500/10 text-emerald-400"
+                    >
+                      List Property
+                    </Button>
+                  </motion.div>
                 </Link>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -108,10 +158,18 @@ export function Header() {
             ) : (
               <>
                 <Link href="/login">
-                  <Button variant="ghost">Sign In</Button>
+                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                    <Button variant="ghost" className="text-slate-300 hover:text-white">
+                      Sign In
+                    </Button>
+                  </motion.div>
                 </Link>
                 <Link href="/register">
-                  <Button>Get Started</Button>
+                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                    <Button className="bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white shadow-lg shadow-emerald-500/20 border-0">
+                      Get Started
+                    </Button>
+                  </motion.div>
                 </Link>
               </>
             )}
@@ -186,9 +244,9 @@ export function Header() {
               </div>
             </SheetContent>
           </Sheet>
-        </div>
+        </motion.div>
       </div>
-    </header>
+    </motion.header>
   );
 }
 

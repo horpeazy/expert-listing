@@ -27,6 +27,8 @@ export async function GET(request: Request) {
     const max_price = searchParams.get("max_price");
     const bedrooms = searchParams.get("bedrooms");
     const bathrooms = searchParams.get("bathrooms");
+    const is_featured = searchParams.get("is_featured");
+    const limit = searchParams.get("limit");
     const sort = searchParams.get("sort") || "newest";
 
     if (search) {
@@ -56,6 +58,12 @@ export async function GET(request: Request) {
     }
     if (bathrooms) {
       query = query.gte("bathrooms", parseInt(bathrooms));
+    }
+    if (is_featured === "true") {
+      query = query.eq("is_featured", true);
+    }
+    if (limit) {
+      query = query.limit(parseInt(limit));
     }
 
     // Apply sorting
