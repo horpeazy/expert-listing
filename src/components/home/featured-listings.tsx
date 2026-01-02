@@ -4,7 +4,6 @@ import Link from "next/link";
 import { PropertyCard, PropertyCardSkeleton } from "@/components/property/property-card";
 import { useEffect, useState, useRef } from "react";
 import type { Property } from "@/types";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function FeaturedListings() {
@@ -63,46 +62,75 @@ export function FeaturedListings() {
   };
 
   return (
-    <section className="py-12 bg-white">
-      <div className="container mx-auto px-6">
+    <section className="py-16 bg-white">
+      <div className="container mx-auto px-10 md:px-20 max-w-[2520px]">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h2 className="text-xl font-semibold text-foreground">
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-semibold text-foreground">
               Featured properties in Lagos
             </h2>
+            <Link href="/properties" className="hidden md:block">
+              <Button variant="ghost" className="text-sm font-semibold hover:bg-gray-100 rounded-full">
+                Show all
+              </Button>
+            </Link>
           </div>
-          <Link href="/properties" className="hidden md:block">
-            <Button variant="ghost" className="text-sm font-semibold hover:bg-gray-100 rounded-full">
-              Show all
-            </Button>
-          </Link>
+          
+          {/* Navigation Buttons Row */}
+          <div className="hidden md:flex items-center justify-end gap-2 mb-6">
+            {/* Left Arrow */}
+            <button
+              onClick={() => scroll("left")}
+              disabled={!canScrollLeft || loading}
+              className="bg-transparent border-0 outline-none p-0 m-0 disabled:opacity-30 disabled:cursor-not-allowed"
+              style={{ width: '32px', height: '32px' }}
+              aria-label="Previous"
+            >
+              <div 
+                className="w-full h-full bg-white border border-[#DDDDDD] rounded-full shadow-sm flex items-center justify-center hover:border-[#222222] hover:shadow-md transition-all"
+              >
+                <svg 
+                  xmlns="http://www.w3.org/2000/svg" 
+                  viewBox="0 0 32 32" 
+                  aria-hidden="true" 
+                  role="presentation" 
+                  focusable="false" 
+                  style={{ display: 'block', fill: 'none', height: '12px', width: '12px', stroke: 'currentcolor', strokeWidth: '4', overflow: 'visible' }}
+                >
+                  <path fill="none" d="M20 28 8.7 16.7a1 1 0 0 1 0-1.4L20 4"></path>
+                </svg>
+              </div>
+            </button>
+
+            {/* Right Arrow */}
+            <button
+              onClick={() => scroll("right")}
+              disabled={!canScrollRight || loading}
+              className="bg-transparent border-0 outline-none p-0 m-0 disabled:opacity-30 disabled:cursor-not-allowed"
+              style={{ width: '32px', height: '32px' }}
+              aria-label="Next"
+            >
+              <div 
+                className="w-full h-full bg-white border border-[#DDDDDD] rounded-full shadow-sm flex items-center justify-center hover:border-[#222222] hover:shadow-md transition-all"
+              >
+                <svg 
+                  xmlns="http://www.w3.org/2000/svg" 
+                  viewBox="0 0 32 32" 
+                  aria-hidden="true" 
+                  role="presentation" 
+                  focusable="false" 
+                  style={{ display: 'block', fill: 'none', height: '12px', width: '12px', stroke: 'currentcolor', strokeWidth: '4', overflow: 'visible' }}
+                >
+                  <path fill="none" d="m12 4 11.3 11.3a1 1 0 0 1 0 1.4L12 28"></path>
+                </svg>
+              </div>
+            </button>
+          </div>
         </div>
 
         {/* Carousel */}
-        <div className="relative group">
-          {/* Left Arrow */}
-          {!loading && canScrollLeft && (
-            <button
-              onClick={() => scroll("left")}
-              className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 bg-white border border-gray-300 rounded-full shadow-md flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:scale-110"
-              aria-label="Scroll left"
-            >
-              <ChevronLeft className="w-4 h-4" />
-            </button>
-          )}
-
-          {/* Right Arrow */}
-          {!loading && canScrollRight && (
-            <button
-              onClick={() => scroll("right")}
-              className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 bg-white border border-gray-300 rounded-full shadow-md flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:scale-110"
-              aria-label="Scroll right"
-            >
-              <ChevronRight className="w-4 h-4" />
-            </button>
-          )}
-
+        <div className="relative">
           {/* Properties Container */}
           <div
             ref={scrollContainerRef}

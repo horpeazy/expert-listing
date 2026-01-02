@@ -38,7 +38,7 @@ export default function RootLayout({
       <body className={`${outfit.variable} ${playfair.variable} antialiased`}>
         <SmoothScrollProvider>
           <AirbnbHeader />
-          <main className="pt-32">
+          <main className="pt-[180px]">
             {children}
           </main>
           <Footer />

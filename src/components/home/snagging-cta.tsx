@@ -12,8 +12,8 @@ export function SnaggingCTA() {
   ];
 
   return (
-    <section className="py-16 bg-white">
-      <div className="container mx-auto px-4">
+    <section className="py-20 bg-white">
+      <div className="container mx-auto px-10 md:px-20 max-w-[2520px]">
         <div className="bg-gradient-to-r from-primary/5 to-primary/10 rounded-3xl p-8 md:p-12 border border-primary/20">
           <div className="max-w-4xl mx-auto">
             <div className="text-center md:text-left">
