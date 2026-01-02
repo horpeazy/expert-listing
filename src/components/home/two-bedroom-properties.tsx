@@ -1,13 +1,13 @@
 "use client";
 
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { PropertyCard, PropertyCardSkeleton } from "@/components/property/property-card";
-import { useEffect, useState, useRef } from "react";
+import { createClient } from "@/lib/supabase/client";
 import type { Property } from "@/types";
-import { Button } from "@/components/ui/button";
 
-export function FeaturedListings() {
+export function TwoBedroomProperties() {
   const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -15,21 +15,24 @@ export function FeaturedListings() {
   const [canScrollRight, setCanScrollRight] = useState(false);
 
   useEffect(() => {
-    async function fetchFeaturedProperties() {
-      try {
-        const response = await fetch("/api/properties?is_featured=true&limit=6");
-        if (response.ok) {
-          const data = await response.json();
-          setProperties(data.properties || []);
-        }
-      } catch (error) {
-        console.error("Error fetching featured properties:", error);
-      } finally {
-        setLoading(false);
+    async function fetchProperties() {
+      const supabase = createClient();
+      
+      const { data, error } = await supabase
+        .from("properties")
+        .select("*, images:property_images(*)")
+        .eq("status", "approved")
+        .eq("bedrooms", 2)
+        .order("created_at", { ascending: false })
+        .limit(6);
+
+      if (!error && data) {
+        setProperties(data);
       }
+      setLoading(false);
     }
 
-    fetchFeaturedProperties();
+    fetchProperties();
   }, []);
 
   useEffect(() => {
@@ -54,7 +57,7 @@ export function FeaturedListings() {
 
   const scroll = (direction: "left" | "right") => {
     if (scrollContainerRef.current) {
-      const scrollAmount = 400;
+      const scrollAmount = 320;
       scrollContainerRef.current.scrollBy({
         left: direction === "left" ? -scrollAmount : scrollAmount,
         behavior: "smooth",
@@ -62,19 +65,42 @@ export function FeaturedListings() {
     }
   };
 
+  if (loading) {
+    return (
+      <section className="bg-white py-8 md:py-16">
+        <div className="mx-auto max-w-[2520px] px-4 md:px-10 lg:px-20">
+          <div className="flex items-center justify-between mb-6 md:mb-8">
+            <div className="flex items-center gap-3">
+              <h2 className="text-xl md:text-2xl font-bold text-[#222222]">2 Bedroom Properties</h2>
+              <ChevronRight className="w-6 h-6 text-[#FF385C]" />
+            </div>
+          </div>
+          <div className="flex gap-3 md:gap-4 overflow-x-auto scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="flex-shrink-0 w-[260px] md:w-[300px]">
+                <PropertyCardSkeleton />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (properties.length === 0) {
+    return null;
+  }
+
   return (
-    <section className="py-8 md:py-16 bg-white">
-      <div className="container mx-auto px-4 md:px-10 lg:px-20 max-w-[2520px]">
-        {/* Header */}
+    <section className="bg-white py-8 md:py-16">
+      <div className="mx-auto max-w-[2520px] px-4 md:px-10 lg:px-20">
         <div className="mb-6 md:mb-8">
           <Link 
-            href="/properties"
+            href="/properties?bedrooms=2"
             className="flex items-center justify-between mb-4 md:mb-6 group cursor-pointer hover:opacity-80 transition-opacity"
           >
             <div className="flex items-center gap-3">
-              <h2 className="text-xl md:text-2xl font-bold text-[#222222]">
-                Featured properties in Lagos
-              </h2>
+              <h2 className="text-xl md:text-2xl font-bold text-[#222222]">2 Bedroom Properties</h2>
               <ChevronRight className="w-6 h-6 text-[#FF385C] transition-transform group-hover:translate-x-1" />
             </div>
             <span className="text-sm font-semibold text-[#FF385C] hover:underline">View all</span>
@@ -131,10 +157,9 @@ export function FeaturedListings() {
             </button>
           </div>
         </div>
-
+        
         {/* Carousel */}
         <div className="relative">
-          {/* Properties Container */}
           <div
             ref={scrollContainerRef}
             className="flex gap-3 md:gap-4 overflow-x-auto scrollbar-hide scroll-smooth -mx-4 px-4 md:mx-0 md:px-0"
@@ -143,53 +168,15 @@ export function FeaturedListings() {
               msOverflowStyle: "none",
             }}
           >
-            {loading ? (
-              // Loading Skeletons
-              [1, 2, 3, 4].map((i) => (
-                <div key={i} className="flex-shrink-0 w-[260px] md:w-[300px]">
-                  <PropertyCardSkeleton />
-                </div>
-              ))
-            ) : properties.length > 0 ? (
-              // Actual Property Cards
-              properties.map((property) => (
-                <div key={property.id} className="flex-shrink-0 w-[260px] md:w-[300px]">
-                  <PropertyCard property={property} />
-                </div>
-              ))
-            ) : (
-              // No Properties Message
-              <div className="w-full text-center py-16">
-                <p className="text-muted-foreground text-lg mb-6">
-                  No featured properties available at the moment.
-                </p>
-                <Link href="/properties">
-                  <Button variant="outline" className="rounded-full">
-                    Browse All Properties
-                  </Button>
-                </Link>
+            {properties.map((property) => (
+              <div key={property.id} className="flex-shrink-0 w-[260px] md:w-[300px]">
+                <PropertyCard property={property} />
               </div>
-            )}
+            ))}
           </div>
         </div>
-
-        {/* Mobile Show All Link */}
-        {!loading && properties.length > 0 && (
-          <div className="mt-6 md:hidden">
-            <Link href="/properties">
-              <Button variant="outline" className="w-full rounded-full">
-                Show all properties
-              </Button>
-            </Link>
-          </div>
-        )}
       </div>
-
-      <style jsx>{`
-        .scrollbar-hide::-webkit-scrollbar {
-          display: none;
-        }
-      `}</style>
     </section>
   );
 }
+

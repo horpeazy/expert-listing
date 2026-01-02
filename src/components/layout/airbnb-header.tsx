@@ -91,16 +91,30 @@ export function AirbnbHeader() {
                 } ${activeTab === tab.id ? 'text-[#222222]' : 'text-[#717171]'}`}
               >
                 <div className="flex flex-col items-center relative">
-                  {/* Icon - Hide on scroll */}
-                  <div className={`transition-all duration-300 ${
-                    isScrolled ? 'h-0 opacity-0 overflow-hidden' : 'h-auto opacity-100'
-                  }`}>
+                {/* Icon - Hide on scroll */}
+                <div className={`transition-all duration-300 ${
+                  isScrolled ? 'h-0 opacity-0 overflow-hidden' : 'h-auto opacity-100'
+                }`}>
+                  <div 
+                    className="mb-1 rounded-full flex items-center justify-center"
+                    style={{
+                      width: '48px',
+                      height: '48px',
+                      background: tab.id === 'rent' 
+                        ? 'linear-gradient(135deg, #8b9dc3 0%, #6b7b9d 100%)'
+                        : tab.id === 'buy'
+                        ? 'linear-gradient(135deg, #e0a0b8 0%, #c97a8a 100%)'
+                        : 'linear-gradient(135deg, #7eb8d4 0%, #5a9cb8 100%)',
+                      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+                    }}
+                  >
                     <tab.icon 
-                      className="mb-[-4px]" 
-                      size={40}
-                      strokeWidth={1.5}
+                      size={24}
+                      strokeWidth={2}
+                      color="white"
                     />
                   </div>
+                </div>
                   
                   {/* Text - Always visible */}
                   <span className={`font-medium leading-tight transition-all duration-300 ${
@@ -219,13 +233,26 @@ export function AirbnbHeader() {
                           `}
                         >
                           <div className="relative flex items-center gap-3">
-                            <span className="flex items-center justify-center" style={{ width: '40px', height: '40px' }}>
+                            <div 
+                              className="rounded-full flex items-center justify-center"
+                              style={{
+                                width: '48px',
+                                height: '48px',
+                                background: tab.id === 'rent' 
+                                  ? 'linear-gradient(135deg, #8b9dc3 0%, #6b7b9d 100%)'
+                                  : tab.id === 'buy'
+                                  ? 'linear-gradient(135deg, #e0a0b8 0%, #c97a8a 100%)'
+                                  : 'linear-gradient(135deg, #7eb8d4 0%, #5a9cb8 100%)',
+                                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+                              }}
+                            >
                               <tab.icon 
-                                size={40}
-                                strokeWidth={1.5}
+                                size={24}
+                                strokeWidth={2}
+                                color="white"
                                 style={{ display: 'block' }}
                               />
-                            </span>
+                            </div>
                             <span className="whitespace-nowrap">{tab.label}</span>
                             {activeTab === tab.id && (
                               <span 
