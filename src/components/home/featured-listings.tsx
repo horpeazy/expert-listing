@@ -67,18 +67,12 @@ export function FeaturedListings() {
       <div className="container mx-auto px-4 md:px-10 lg:px-20 max-w-[2520px]">
         {/* Header */}
         <div className="mb-6 md:mb-8">
-          <Link 
-            href="/properties"
-            className="flex items-center justify-between mb-4 md:mb-6 group cursor-pointer hover:opacity-80 transition-opacity"
-          >
-            <div className="flex items-center gap-3">
-              <h2 className="text-xl md:text-2xl font-bold text-[#222222]">
-                Featured properties in Lagos
-              </h2>
-              <ChevronRight className="w-6 h-6 text-[#FF385C] transition-transform group-hover:translate-x-1" />
-            </div>
-            <span className="text-sm font-semibold text-[#FF385C] hover:underline">View all</span>
-          </Link>
+          <div className="flex items-center gap-3 mb-4 md:mb-6">
+            <h2 className="text-xl md:text-2xl font-bold text-[#222222]">
+              Featured properties in Lagos
+            </h2>
+            <ChevronRight className="w-6 h-6 text-[#FF385C]" />
+          </div>
           
           {/* Navigation Buttons Row */}
           <div className="hidden md:flex items-center justify-end gap-2 mb-6">
@@ -173,16 +167,6 @@ export function FeaturedListings() {
           </div>
         </div>
 
-        {/* Mobile Show All Link */}
-        {!loading && properties.length > 0 && (
-          <div className="mt-6 md:hidden">
-            <Link href="/properties">
-              <Button variant="outline" className="w-full rounded-full">
-                Show all properties
-              </Button>
-            </Link>
-          </div>
-        )}
       </div>
 
       <style jsx>{`

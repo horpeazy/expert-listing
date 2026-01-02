@@ -95,16 +95,10 @@ export function TwoBedroomProperties() {
     <section className="bg-white py-8 md:py-16">
       <div className="mx-auto max-w-[2520px] px-4 md:px-10 lg:px-20">
         <div className="mb-6 md:mb-8">
-          <Link 
-            href="/properties?bedrooms=2"
-            className="flex items-center justify-between mb-4 md:mb-6 group cursor-pointer hover:opacity-80 transition-opacity"
-          >
-            <div className="flex items-center gap-3">
-              <h2 className="text-xl md:text-2xl font-bold text-[#222222]">2 Bedroom Properties</h2>
-              <ChevronRight className="w-6 h-6 text-[#FF385C] transition-transform group-hover:translate-x-1" />
-            </div>
-            <span className="text-sm font-semibold text-[#FF385C] hover:underline">View all</span>
-          </Link>
+          <div className="flex items-center gap-3 mb-4 md:mb-6">
+            <h2 className="text-xl md:text-2xl font-bold text-[#222222]">2 Bedroom Properties</h2>
+            <ChevronRight className="w-6 h-6 text-[#FF385C]" />
+          </div>
           
           {/* Navigation Buttons Row */}
           <div className="hidden md:flex items-center justify-end gap-2 mb-6">
@@ -175,6 +169,7 @@ export function TwoBedroomProperties() {
             ))}
           </div>
         </div>
+
       </div>
     </section>
   );
