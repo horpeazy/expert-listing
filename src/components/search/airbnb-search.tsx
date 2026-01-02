@@ -144,7 +144,7 @@ export function AirbnbSearch() {
 
       {/* Where Dropdown */}
       {activeSection === "where" && (
-        <div className="absolute top-full left-0 mt-3 w-[400px] bg-white rounded-[24px] shadow-2xl border border-gray-200 p-6 z-50">
+        <div className="absolute top-full left-0 mt-3 w-[400px] bg-white rounded-[24px] shadow-2xl border border-gray-200 p-6 z-[100]">
           <h3 className="text-sm font-semibold text-[#222222] mb-3">Popular locations</h3>
           <div className="space-y-2">
             {POPULAR_LOCATIONS.slice(0, 6).map((loc) => (
@@ -166,7 +166,7 @@ export function AirbnbSearch() {
 
       {/* Property Type Dropdown */}
       {activeSection === "type" && (
-        <div className="absolute top-full left-1/4 mt-3 w-[360px] bg-white rounded-[24px] shadow-2xl border border-gray-200 p-6 z-50">
+        <div className="absolute top-full left-1/4 mt-3 w-[360px] bg-white rounded-[24px] shadow-2xl border border-gray-200 p-6 z-[100]">
           {/* Featured Options - Pills */}
           <div className="mb-4 pb-4 border-b border-gray-100">
             <h3 className="text-xs font-semibold text-[#222222] mb-3">Popular</h3>
@@ -213,7 +213,7 @@ export function AirbnbSearch() {
 
       {/* Price Dropdown */}
       {activeSection === "price" && (
-        <div className="absolute top-full right-0 mt-3 w-[350px] bg-white rounded-[24px] shadow-2xl border border-gray-200 p-6 z-50">
+        <div className="absolute top-full right-0 mt-3 w-[350px] bg-white rounded-[24px] shadow-2xl border border-gray-200 p-6 z-[100]">
           <h3 className="text-sm font-semibold text-[#222222] mb-4">Price range</h3>
           
           {/* Quick Presets */}

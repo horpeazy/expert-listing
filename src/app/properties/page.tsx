@@ -84,22 +84,22 @@ function PropertiesContent() {
   };
 
   return (
-    <div className="min-h-screen py-8">
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-3xl font-bold mb-2">Find Properties</h1>
-            <p className="text-slate-600">
+    <div className="min-h-screen py-4 md:py-8">
+      <div className="container mx-auto px-4 md:px-6 max-w-[2520px]">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+          <div className="flex-1 min-w-0">
+            <h1 className="text-xl md:text-2xl lg:text-3xl font-bold mb-1 md:mb-2">Find Properties</h1>
+            <p className="text-sm md:text-base text-slate-600">
               {loading ? "Searching..." : `${properties.length} properties found`}
             </p>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4 w-full sm:w-auto">
             <Select
               value={filters.sort}
               onValueChange={(value) => setFilters({ ...filters, sort: value })}
             >
-              <SelectTrigger className="w-[180px]">
+              <SelectTrigger className="w-full sm:w-[180px] text-sm">
                 <SelectValue placeholder="Sort by" />
               </SelectTrigger>
               <SelectContent>
@@ -112,9 +112,10 @@ function PropertiesContent() {
             {/* Mobile Filter Button */}
             <Sheet open={mobileFiltersOpen} onOpenChange={setMobileFiltersOpen}>
               <SheetTrigger asChild className="lg:hidden">
-                <Button variant="outline">
+                <Button variant="outline" className="flex-shrink-0">
                   <SlidersHorizontal className="w-4 h-4 mr-2" />
-                  Filters
+                  <span className="hidden sm:inline">Filters</span>
+                  <span className="sm:hidden">Filter</span>
                 </Button>
               </SheetTrigger>
               <SheetContent side="left" className="w-80 overflow-y-auto">
@@ -128,7 +129,7 @@ function PropertiesContent() {
           </div>
         </div>
 
-        <div className="flex gap-8">
+        <div className="flex flex-col lg:flex-row gap-4 lg:gap-8">
           {/* Desktop Filters Sidebar */}
           <aside className="hidden lg:block w-80 flex-shrink-0">
             <div className="sticky top-24 bg-white rounded-lg border p-6">
@@ -141,7 +142,7 @@ function PropertiesContent() {
           </aside>
 
           {/* Properties Grid */}
-          <div className="flex-1">
+          <div className="flex-1 min-w-0">
             <PropertyGrid properties={properties} loading={loading} />
           </div>
         </div>
