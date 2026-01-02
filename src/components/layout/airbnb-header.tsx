@@ -112,8 +112,12 @@ export function AirbnbHeader() {
                   {/* Active indicator */}
                   {activeTab === tab.id && (
                     <span 
-                      className="absolute bottom-0 left-0 right-0 bg-[#FF385C]" 
-                      style={{ height: '3px', bottom: '-4px' }}
+                      className="absolute left-0 right-0 bg-[#FF385C]" 
+                      style={{ 
+                        height: '3px', 
+                        bottom: isScrolled ? '-12px' : '-4px',
+                        borderRadius: '1.5px 1.5px 0 0'
+                      }}
                     />
                   )}
                 </div>
@@ -126,27 +130,40 @@ export function AirbnbHeader() {
         <div 
           className="hidden md:flex items-center relative px-4 md:px-10 lg:px-20 transition-all duration-300 ease-in-out"
           style={{
-            height: isScrolled ? '64px' : '64px'
+            height: isScrolled ? '64px' : '80px',
+            paddingTop: isScrolled ? '0' : '8px'
           }}
         >
           {/* Left: Logo */}
-          <Link href="/" className="flex items-center hover:opacity-80 transition-all duration-300 ease-in-out">
+          <Link href="/" className="flex items-center gap-3 hover:opacity-80 transition-all duration-300 ease-in-out">
             <div 
-              className="bg-white rounded-lg shadow-sm border border-gray-200 transition-all duration-300 ease-in-out"
+              className="bg-white rounded-lg shadow-sm border border-gray-200 transition-all duration-300 ease-in-out flex-shrink-0"
               style={{
-                width: isScrolled ? '40px' : '48px',
-                height: isScrolled ? '40px' : '48px',
-                padding: isScrolled ? '4px' : '6px'
+                width: isScrolled ? '44px' : '56px',
+                height: isScrolled ? '44px' : '56px',
+                padding: isScrolled ? '5px' : '7px'
               }}
             >
               <Image 
                 src="/homeplug.jpg" 
                 alt="Home Plug Realty" 
-                width={48}
-                height={48}
+                width={56}
+                height={56}
                 className="w-full h-full object-contain"
               />
             </div>
+            <span 
+              className="font-bold tracking-tight transition-all duration-300 ease-in-out"
+              style={{
+                fontSize: isScrolled ? '18px' : '22px',
+                color: '#222222',
+                fontFamily: 'var(--font-outfit)',
+                letterSpacing: '-0.02em',
+                textTransform: 'uppercase'
+              }}
+            >
+              HOME PLUG
+            </span>
           </Link>
 
           {/* Desktop: Compact Search (when scrolled) or Navigation Tabs */}
@@ -179,8 +196,8 @@ export function AirbnbHeader() {
             <nav 
               className="hidden lg:flex items-center absolute left-1/2 -translate-x-1/2" 
               style={{ 
-                marginTop: '22px', 
-                marginBottom: '24px',
+                marginTop: '32px', 
+                marginBottom: '28px',
                 width: '500px',
                 height: '48px',
                 transition: 'opacity 0.3s ease-in-out, transform 0.3s ease-in-out'
@@ -197,28 +214,30 @@ export function AirbnbHeader() {
                           role="tab"
                           aria-selected={activeTab === tab.id}
                           className={`
-                            relative h-12 flex items-center justify-center gap-3 text-lg font-semibold transition-colors flex-1
+                            h-12 flex items-center justify-center text-lg font-semibold transition-colors flex-1
                             ${activeTab === tab.id ? 'text-[#222222]' : 'text-[#717171] hover:text-[#222222]'}
                           `}
                         >
-                          <span className="flex items-center justify-center" style={{ width: '40px', height: '40px' }}>
-                            <tab.icon 
-                              size={40}
-                              strokeWidth={1.5}
-                              style={{ display: 'block' }}
-                            />
-                          </span>
-                          <span className="whitespace-nowrap">{tab.label}</span>
-                {activeTab === tab.id && (
-                  <span 
-                    className="absolute left-0 right-0 bg-[#222222]" 
-                    style={{ 
-                      bottom: '0px',
-                      height: '3px',
-                      borderRadius: '1.5px 1.5px 0 0'
-                    }}
-                  />
-                )}
+                          <div className="relative flex items-center gap-3">
+                            <span className="flex items-center justify-center" style={{ width: '40px', height: '40px' }}>
+                              <tab.icon 
+                                size={40}
+                                strokeWidth={1.5}
+                                style={{ display: 'block' }}
+                              />
+                            </span>
+                            <span className="whitespace-nowrap">{tab.label}</span>
+                            {activeTab === tab.id && (
+                              <span 
+                                className="absolute left-0 right-0 bg-[#222222]" 
+                                style={{ 
+                                  bottom: '-12px',
+                                  height: '3px',
+                                  borderRadius: '1.5px 1.5px 0 0'
+                                }}
+                              />
+                            )}
+                          </div>
               </button>
             ))}
           </nav>
