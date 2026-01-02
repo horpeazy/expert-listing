@@ -20,16 +20,16 @@ export function PackageCards({ onSelectPackage }: PackageCardsProps) {
         <StaggerItem key={key}>
           <motion.div
             className="relative h-full"
-            whileHover={{ y: -10, scale: pkg.popular ? 1.03 : 1.02 }}
+            whileHover={{ y: -10, scale: (pkg as any).popular ? 1.03 : 1.02 }}
             transition={{ duration: 0.3 }}
           >
             <Card
               className={`relative h-full bg-card border-white/5 overflow-hidden ${
-                pkg.popular ? "border-emerald-500/50 shadow-2xl shadow-emerald-500/20" : ""
+                (pkg as any).popular ? "border-emerald-500/50 shadow-2xl shadow-emerald-500/20" : ""
               }`}
             >
               {/* Glow Effect for Popular */}
-              {pkg.popular && (
+              {(pkg as any).popular && (
                 <motion.div
                   className="absolute inset-0 bg-gradient-to-b from-emerald-500/10 to-transparent pointer-events-none"
                   animate={{ opacity: [0.5, 0.8, 0.5] }}
@@ -37,7 +37,7 @@ export function PackageCards({ onSelectPackage }: PackageCardsProps) {
                 />
               )}
 
-              {pkg.popular && (
+              {(pkg as any).popular && (
                 <motion.div
                   initial={{ y: -50, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
@@ -106,11 +106,11 @@ export function PackageCards({ onSelectPackage }: PackageCardsProps) {
                 <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
                   <Button
                     className={`w-full ${
-                      pkg.popular
+                      (pkg as any).popular
                         ? "bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white shadow-lg shadow-emerald-500/20 border-0"
                         : "border-emerald-500/30 hover:border-emerald-500 hover:bg-emerald-500/10 text-emerald-400"
                     }`}
-                    variant={pkg.popular ? "default" : "outline"}
+                    variant={(pkg as any).popular ? "default" : "outline"}
                     onClick={() => onSelectPackage(key)}
                   >
                     Book {pkg.name}
@@ -120,7 +120,7 @@ export function PackageCards({ onSelectPackage }: PackageCardsProps) {
             </Card>
 
             {/* Floating Shadow */}
-            {pkg.popular && (
+            {(pkg as any).popular && (
               <motion.div
                 className="absolute -inset-4 rounded-2xl bg-emerald-500/10 blur-xl -z-10"
                 animate={{ scale: [1, 1.05, 1] }}

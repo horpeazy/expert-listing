@@ -62,12 +62,12 @@ export function FeaturedListings() {
   };
 
   return (
-    <section className="py-16 bg-white">
-      <div className="container mx-auto px-10 md:px-20 max-w-[2520px]">
+    <section className="py-8 md:py-16 bg-white">
+      <div className="container mx-auto px-4 md:px-10 lg:px-20 max-w-[2520px]">
         {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-semibold text-foreground">
+        <div className="mb-6 md:mb-8">
+          <div className="flex items-center justify-between mb-4 md:mb-6">
+            <h2 className="text-xl md:text-2xl font-semibold text-foreground">
               Featured properties in Lagos
             </h2>
             <Link href="/properties" className="hidden md:block">
@@ -134,7 +134,7 @@ export function FeaturedListings() {
           {/* Properties Container */}
           <div
             ref={scrollContainerRef}
-            className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth"
+            className="flex gap-3 md:gap-4 overflow-x-auto scrollbar-hide scroll-smooth -mx-4 px-4 md:mx-0 md:px-0"
             style={{
               scrollbarWidth: "none",
               msOverflowStyle: "none",
@@ -143,14 +143,14 @@ export function FeaturedListings() {
             {loading ? (
               // Loading Skeletons
               [1, 2, 3, 4].map((i) => (
-                <div key={i} className="flex-shrink-0 w-[300px]">
+                <div key={i} className="flex-shrink-0 w-[260px] md:w-[300px]">
                   <PropertyCardSkeleton />
                 </div>
               ))
             ) : properties.length > 0 ? (
               // Actual Property Cards
               properties.map((property) => (
-                <div key={property.id} className="flex-shrink-0 w-[300px]">
+                <div key={property.id} className="flex-shrink-0 w-[260px] md:w-[300px]">
                   <PropertyCard property={property} />
                 </div>
               ))

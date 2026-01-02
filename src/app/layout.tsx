@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { SmoothScrollProvider } from "@/components/providers/smooth-scroll";
 import { AirbnbHeader } from "@/components/layout/airbnb-header";
 import { Footer } from "@/components/layout/footer";
+import { BottomNav } from "@/components/layout/bottom-nav";
 import { APP_NAME, APP_DESCRIPTION } from "@/lib/constants";
 
 const outfit = Outfit({
@@ -38,10 +39,11 @@ export default function RootLayout({
       <body className={`${outfit.variable} ${playfair.variable} antialiased`}>
         <SmoothScrollProvider>
           <AirbnbHeader />
-          <main className="pt-[180px]">
+          <main className="pt-[160px] md:pt-[180px] pb-20 md:pb-0">
             {children}
           </main>
           <Footer />
+          <BottomNav />
           <Toaster />
         </SmoothScrollProvider>
       </body>

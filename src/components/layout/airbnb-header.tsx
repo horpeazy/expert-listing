@@ -4,20 +4,11 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Menu, User } from "lucide-react";
-import { useUser } from "@/hooks/use-user";
+import { Key, Home, Bed } from "lucide-react";
 import { AirbnbSearch } from "@/components/search/airbnb-search";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 export function AirbnbHeader() {
   const router = useRouter();
-  const { user, profile, signOut } = useUser();
   const [activeTab, setActiveTab] = useState("rent");
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -31,45 +22,111 @@ export function AirbnbHeader() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleSignOut = async () => {
-    await signOut();
-    router.push("/");
-  };
-
   const tabs = [
     { 
       id: "rent", 
       label: "Rent", 
       href: "/properties?transaction_type=rent",
-      icon: "https://a0.muscache.com/im/pictures/airbnb-platform-assets/AirbnbPlatformAssets-search-bar-icons/original/4aae4ed7-5939-4e76-b100-e69440ebeae4.png?im_w=240"
+      icon: Key
     },
     { 
       id: "buy", 
       label: "Buy", 
       href: "/properties?transaction_type=sale",
-      icon: "https://a0.muscache.com/im/pictures/airbnb-platform-assets/AirbnbPlatformAssets-search-bar-icons/original/e47ab655-027b-4679-b2e6-df1c99a5c33d.png?im_w=240"
+      icon: Home
     },
     { 
       id: "shortlets", 
       label: "Shortlets", 
       href: "/properties?transaction_type=shortlet",
-      icon: "https://a0.muscache.com/im/pictures/airbnb-platform-assets/AirbnbPlatformAssets-search-bar-icons/original/3d67e9a9-520a-49ee-b439-7b3a75ea814d.png?im_w=240"
+      icon: Bed
     },
   ];
 
   return (
     <header 
-      className="fixed top-0 left-0 right-0 z-50 bg-[#F7F7F7] border-b border-[#EBEBEB] transition-all duration-300 ease-in-out"
+      className="fixed top-0 left-0 right-0 z-50 border-b border-[#EBEBEB] transition-all duration-300 ease-in-out"
       style={{
-        height: isScrolled ? '80px' : 'auto'
+        height: isScrolled ? '80px' : 'auto',
+        backgroundColor: '#F7F7F7',
+        opacity: 1
       }}
     >
-      <div className="px-10 md:px-20 mx-auto max-w-[2520px]">
-        {/* Top Row: Logo, Search (when scrolled), Right Nav */}
+      <div className="mx-auto max-w-[2520px]">
+        {/* Mobile: Search Bar + Tabs */}
+        <div className="flex md:hidden flex-col w-full bg-[#F7F7F7]">
+          {/* Search Bar */}
+          <div className={`px-4 transition-all duration-300 ${
+            isScrolled ? 'pt-2 pb-3' : 'pt-3 pb-4'
+          }`}>
+            <button
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              className={`flex items-center gap-3 w-full px-4 bg-white border border-[#DDDDDD] rounded-full shadow-sm hover:shadow-md transition-all duration-300 ${
+                isScrolled ? 'py-2' : 'py-3'
+              }`}
+            >
+              <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="presentation" focusable="false" style={{ display: 'block', fill: 'none', height: '16px', width: '16px', stroke: 'currentColor', strokeWidth: '3', overflow: 'visible' }}>
+                <path fill="none" d="m13 24c6.0751322 0 11-4.9248678 11-11 0-6.07513225-4.9248678-11-11-11-6.07513225 0-11 4.92486775-11 11 0 6.0751322 4.92486775 11 11 11zm8-3 10 10"></path>
+              </svg>
+              <div className="flex flex-col items-start text-left">
+                <span className="text-sm font-semibold text-[#222222]">Start your search</span>
+                <span className="text-xs text-[#717171]">Anywhere • Any type • Any budget</span>
+              </div>
+            </button>
+          </div>
+
+          {/* Horizontal Tabs */}
+          <div className={`flex items-center justify-around border-b border-gray-200 transition-all duration-300 ${
+            isScrolled ? 'pb-2' : 'pb-1'
+          }`}>
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => {
+                  setActiveTab(tab.id);
+                  router.push(tab.href);
+                }}
+                className={`flex flex-col items-center px-4 transition-all duration-300 ${
+                  isScrolled ? 'py-3' : 'py-1'
+                } ${activeTab === tab.id ? 'text-[#222222]' : 'text-[#717171]'}`}
+              >
+                <div className="flex flex-col items-center relative">
+                  {/* Icon - Hide on scroll */}
+                  <div className={`transition-all duration-300 ${
+                    isScrolled ? 'h-0 opacity-0 overflow-hidden' : 'h-auto opacity-100'
+                  }`}>
+                    <tab.icon 
+                      className="mb-[-4px]" 
+                      size={40}
+                      strokeWidth={1.5}
+                    />
+                  </div>
+                  
+                  {/* Text - Always visible */}
+                  <span className={`font-medium leading-tight transition-all duration-300 ${
+                    isScrolled ? 'text-base' : 'text-sm'
+                  }`}>
+                    {tab.label}
+                  </span>
+                  
+                  {/* Active indicator */}
+                  {activeTab === tab.id && (
+                    <span 
+                      className="absolute bottom-0 left-0 right-0 bg-[#FF385C]" 
+                      style={{ height: '3px', bottom: '-4px' }}
+                    />
+                  )}
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Desktop: Top Row with Logo, Search (when scrolled), Navigation Tabs */}
         <div 
-          className="flex items-center relative transition-all duration-300 ease-in-out"
+          className="hidden md:flex items-center relative px-4 md:px-10 lg:px-20 transition-all duration-300 ease-in-out"
           style={{
-            height: isScrolled ? '80px' : '80px'
+            height: isScrolled ? '64px' : '64px'
           }}
         >
           {/* Left: Logo */}
@@ -77,22 +134,22 @@ export function AirbnbHeader() {
             <div 
               className="bg-white rounded-lg shadow-sm border border-gray-200 transition-all duration-300 ease-in-out"
               style={{
-                width: isScrolled ? '48px' : '64px',
-                height: isScrolled ? '48px' : '64px',
-                padding: isScrolled ? '6px' : '8px'
+                width: isScrolled ? '40px' : '48px',
+                height: isScrolled ? '40px' : '48px',
+                padding: isScrolled ? '4px' : '6px'
               }}
             >
               <Image 
                 src="/homeplug.jpg" 
                 alt="Home Plug Realty" 
-                width={64}
-                height={64}
+                width={48}
+                height={48}
                 className="w-full h-full object-contain"
               />
             </div>
           </Link>
 
-          {/* Center: Compact Search (when scrolled) or Navigation Tabs */}
+          {/* Desktop: Compact Search (when scrolled) or Navigation Tabs */}
           {isScrolled ? (
             <button
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
@@ -144,13 +201,10 @@ export function AirbnbHeader() {
                             ${activeTab === tab.id ? 'text-[#222222]' : 'text-[#717171] hover:text-[#222222]'}
                           `}
                         >
-                          <span className="flex items-center justify-center" style={{ width: '56px', height: '56px' }}>
-                            <Image 
-                              src={tab.icon} 
-                              alt="" 
-                              width={56}
-                              height={56}
-                              className="w-full h-full object-contain"
+                          <span className="flex items-center justify-center" style={{ width: '40px', height: '40px' }}>
+                            <tab.icon 
+                              size={40}
+                              strokeWidth={1.5}
                               style={{ display: 'block' }}
                             />
                           </span>
@@ -170,73 +224,11 @@ export function AirbnbHeader() {
           </nav>
           )}
 
-          {/* Right: User Menu */}
-          <div className="flex items-center gap-2 ml-auto">
-            <DropdownMenu modal={false}>
-              <DropdownMenuTrigger asChild>
-                <button className="flex items-center gap-3 pl-3 pr-1.5 py-1.5 border border-[#DDDDDD] rounded-full hover:shadow-md transition-shadow bg-white focus:outline-none focus:shadow-md">
-                  <Menu className="w-4 h-4 text-[#222222]" />
-                  {profile?.avatar_url ? (
-                    <Image
-                      src={profile.avatar_url}
-                      alt={profile.full_name || "User"}
-                      width={30}
-                      height={30}
-                      className="w-[30px] h-[30px] rounded-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-[30px] h-[30px] rounded-full bg-[#717171] flex items-center justify-center flex-shrink-0">
-                      <User className="w-4 h-4 text-white" />
-                    </div>
-                  )}
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56 mt-2" sideOffset={8}>
-                {user ? (
-                  <>
-                    <div className="px-3 py-2">
-                      <p className="text-sm font-medium">{profile?.full_name || "User"}</p>
-                      <p className="text-xs text-muted-foreground">{user.email}</p>
-                    </div>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem asChild>
-                      <Link href="/dashboard" className="cursor-pointer">Dashboard</Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link href="/dashboard/listings" className="cursor-pointer">My Listings</Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link href="/dashboard/bookings" className="cursor-pointer">Bookings</Link>
-                    </DropdownMenuItem>
-                    {profile?.role === "admin" && (
-                      <DropdownMenuItem asChild>
-                        <Link href="/admin" className="cursor-pointer">Admin Panel</Link>
-                      </DropdownMenuItem>
-                    )}
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
-                      Sign Out
-                    </DropdownMenuItem>
-                  </>
-                ) : (
-                  <>
-                    <DropdownMenuItem asChild>
-                      <Link href="/register" className="cursor-pointer font-semibold">Sign up</Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link href="/login" className="cursor-pointer">Log in</Link>
-                    </DropdownMenuItem>
-                  </>
-                )}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-
         </div>
 
-        {/* Bottom Row: Search Bar */}
+        {/* Bottom Row: Search Bar (Desktop Only) */}
         <div 
-          className={`hidden md:flex justify-center transition-all duration-300 ease-in-out overflow-hidden ${
+          className={`hidden md:flex justify-center px-4 md:px-10 lg:px-20 transition-all duration-300 ease-in-out overflow-hidden ${
             isScrolled ? 'max-h-0 opacity-0 pb-0 pt-0' : 'max-h-96 opacity-100 pb-6 pt-4'
           }`}
         >

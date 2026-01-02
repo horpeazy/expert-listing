@@ -6,19 +6,20 @@ import { Badge } from "@/components/ui/badge";
 import { Bed, Bath, Square, MapPin, Heart } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
 import type { Property } from "@/types";
-import { useState } from "react";
+import { useWishlist } from "@/hooks/use-wishlist";
 
 interface PropertyCardProps {
   property: Property;
 }
 
 export function PropertyCard({ property }: PropertyCardProps) {
-  const [isFavorited, setIsFavorited] = useState(false);
+  const { isInWishlist, toggleWishlist } = useWishlist();
+  const isFavorited = isInWishlist(property.id);
   const primaryImage = property.images?.find((img) => img.is_primary) || property.images?.[0];
 
   const handleFavoriteClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    setIsFavorited(!isFavorited);
+    toggleWishlist(property.id);
   };
 
   return (
@@ -45,8 +46,8 @@ export function PropertyCard({ property }: PropertyCardProps) {
             className="absolute top-3 right-3 p-2 bg-white/90 hover:bg-white rounded-full transition-colors z-10 shadow-sm"
           >
             <Heart
-              className={`w-5 h-5 ${
-                isFavorited ? "fill-primary text-primary" : "text-gray-700"
+              className={`w-5 h-5 transition-colors ${
+                isFavorited ? "fill-[#FF385C] text-[#FF385C]" : "text-gray-700"
               }`}
             />
           </button>

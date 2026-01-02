@@ -22,7 +22,18 @@ function PropertiesContent() {
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const [filters, setFilters] = useState({
+  const [filters, setFilters] = useState<{
+    search: string;
+    transaction_type: "sale" | "rent" | undefined;
+    property_type: string[];
+    state: string | undefined;
+    city: string | undefined;
+    min_price: number | undefined;
+    max_price: number | undefined;
+    bedrooms: number | undefined;
+    bathrooms: number | undefined;
+    sort: string;
+  }>({
     search: searchParams.get("search") || "",
     transaction_type: (searchParams.get("transaction_type") as "sale" | "rent") || undefined,
     property_type: searchParams.get("property_type")?.split(",") || [],

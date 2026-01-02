@@ -40,19 +40,37 @@ export async function middleware(request: NextRequest) {
 
   // Protect admin routes
   if (request.nextUrl.pathname.startsWith("/admin")) {
-    if (!user) {
-      return NextResponse.redirect(new URL("/login", request.url));
+    // Allow access to admin login page
+    if (request.nextUrl.pathname === "/admin/login") {
+      // If already authenticated, redirect to admin dashboard
+      if (user) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("role")
+          .eq("id", user.id)
+          .single();
+
+        if (profile?.role === "admin" || profile?.role === "agent") {
+          return NextResponse.redirect(new URL("/admin", request.url));
+        }
+      }
+      return supabaseResponse;
     }
 
-    // Check if user is admin
+    // For all other admin routes, require authentication
+    if (!user) {
+      return NextResponse.redirect(new URL("/admin/login", request.url));
+    }
+
+    // Check if user is admin or agent
     const { data: profile } = await supabase
       .from("profiles")
       .select("role")
       .eq("id", user.id)
       .single();
 
-    if (profile?.role !== "admin") {
-      return NextResponse.redirect(new URL("/dashboard", request.url));
+    if (profile?.role !== "admin" && profile?.role !== "agent") {
+      return NextResponse.redirect(new URL("/", request.url));
     }
   }
 
