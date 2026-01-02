@@ -1,205 +1,125 @@
 "use client";
 
 import Link from "next/link";
-import { Facebook, Twitter, Instagram, Linkedin, ArrowUp } from "lucide-react";
-import { motion } from "framer-motion";
-import { useState, useEffect } from "react";
+import { Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
-  const [showScrollTop, setShowScrollTop] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setShowScrollTop(window.scrollY > 500);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
 
   return (
-    <footer className="bg-black text-slate-300 border-t border-white/5 relative">
-      {/* Gradient Line */}
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-emerald-500 to-transparent" />
-
-      <div className="container mx-auto px-4 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
+    <footer className="bg-gray-50 text-foreground border-t border-gray-200">
+      <div className="container mx-auto px-4 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
-          <motion.div
-            className="space-y-6"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-          >
-            <div className="flex items-center space-x-3 group cursor-pointer">
-              <motion.div
-                className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-xl flex items-center justify-center relative overflow-hidden"
-                whileHover={{ scale: 1.05 }}
-              >
-                <span className="text-white font-bold text-2xl relative z-10">E</span>
-                <motion.div
-                  className="absolute inset-0 glow-emerald opacity-0 group-hover:opacity-100 transition-opacity"
+          <div className="space-y-4">
+            <div className="flex items-center space-x-2">
+              <div className="w-10 h-10 bg-white rounded-lg p-1.5 shadow-sm border border-gray-200">
+                <img 
+                  src="/logo.jpg" 
+                  alt="Home Plug Realty" 
+                  className="w-full h-full object-contain"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                    e.currentTarget.parentElement!.innerHTML = '<span class="text-primary font-bold text-lg flex items-center justify-center h-full">HP</span>';
+                  }}
                 />
-              </motion.div>
-              <span className="font-bold text-2xl gradient-text">Expert Listing</span>
+              </div>
+              <div>
+                <span className="font-bold text-base text-foreground">Home Plug Realty</span>
+              </div>
             </div>
-            <p className="text-slate-400 leading-relaxed">
-              Find Your Perfect Home in Nigeria. Browse verified listings and connect with trusted agents.
+            <p className="text-sm text-muted-foreground">
+              Your reliable property solutions partner in Lagos, Nigeria.
             </p>
-          </motion.div>
+          </div>
 
           {/* Quick Links */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-          >
-            <h3 className="font-semibold text-white mb-6 text-lg">Quick Links</h3>
-            <ul className="space-y-3">
+          <div>
+            <h3 className="font-semibold text-foreground mb-4">Quick Links</h3>
+            <ul className="space-y-2">
               {[
                 { href: "/properties?transaction_type=rent", label: "Rent" },
                 { href: "/properties?transaction_type=sale", label: "Buy" },
                 { href: "/properties?show_commercial=true", label: "Commercial" },
                 { href: "/snagging", label: "Snagging Service" },
-              ].map((link, index) => (
-                <motion.li
-                  key={link.href}
-                  initial={{ opacity: 0, x: -10 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.15 + index * 0.05 }}
-                >
-                  <Link href={link.href} className="group inline-flex items-center text-slate-400 hover:text-emerald-400 transition-colors">
-                    <span className="relative">
-                      {link.label}
-                      <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-emerald-400 group-hover:w-full transition-all duration-300" />
-                    </span>
+              ].map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    {link.label}
                   </Link>
-                </motion.li>
+                </li>
               ))}
             </ul>
-          </motion.div>
+          </div>
 
           {/* Company */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
-            <h3 className="font-semibold text-white mb-6 text-lg">Company</h3>
-            <ul className="space-y-3">
+          <div>
+            <h3 className="font-semibold text-foreground mb-4">Company</h3>
+            <ul className="space-y-2">
               {[
                 { href: "/about", label: "About Us" },
                 { href: "/contact", label: "Contact" },
                 { href: "/terms", label: "Terms & Conditions" },
                 { href: "/privacy", label: "Privacy Policy" },
-              ].map((link, index) => (
-                <motion.li
-                  key={link.href}
-                  initial={{ opacity: 0, x: -10 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.25 + index * 0.05 }}
-                >
-                  <Link href={link.href} className="group inline-flex items-center text-slate-400 hover:text-emerald-400 transition-colors">
-                    <span className="relative">
-                      {link.label}
-                      <span className="absolute -bottom-0.5 left-0 w-0 h-0.5 bg-emerald-400 group-hover:w-full transition-all duration-300" />
-                    </span>
+              ].map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    {link.label}
                   </Link>
-                </motion.li>
+                </li>
               ))}
             </ul>
-          </motion.div>
+          </div>
 
           {/* Connect */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-          >
-            <h3 className="font-semibold text-white mb-6 text-lg">Connect</h3>
-            <div className="flex space-x-4 mb-6">
+          <div>
+            <h3 className="font-semibold text-foreground mb-4">Connect</h3>
+            <div className="flex space-x-3 mb-4">
               {[
                 { Icon: Facebook, href: "https://facebook.com" },
                 { Icon: Twitter, href: "https://twitter.com" },
                 { Icon: Instagram, href: "https://instagram.com" },
                 { Icon: Linkedin, href: "https://linkedin.com" },
-              ].map(({ Icon, href }, index) => (
-                <motion.a
+              ].map(({ Icon, href }) => (
+                <a
                   key={href}
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center text-slate-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition-all group"
-                  whileHover={{ scale: 1.1, y: -2 }}
-                  whileTap={{ scale: 0.95 }}
-                  initial={{ opacity: 0, scale: 0 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.35 + index * 0.05 }}
+                  className="w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all"
                 >
-                  <Icon className="w-5 h-5" />
-                  <motion.div
-                    className="absolute inset-0 rounded-lg glow-emerald opacity-0 group-hover:opacity-100 transition-opacity"
-                  />
-                </motion.a>
+                  <Icon className="w-4 h-4" />
+                </a>
               ))}
             </div>
-            <div className="space-y-3 text-sm">
-              <p className="text-slate-400">
-                <span className="text-slate-500">Email:</span>{" "}
-                <a href="mailto:info@expertlisting.ng" className="hover:text-emerald-400 transition-colors">
-                  info@expertlisting.ng
+            <div className="space-y-2 text-sm">
+              <p className="text-muted-foreground">
+                <a href="mailto:info@homeplugrealty.ng" className="hover:text-primary transition-colors">
+                  info@homeplugrealty.ng
                 </a>
               </p>
-              <p className="text-slate-400">
-                <span className="text-slate-500">Phone:</span>{" "}
-                <a href="tel:+2348001234567" className="hover:text-emerald-400 transition-colors">
-                  +234 800 123 4567
+              <p className="text-muted-foreground">
+                <a href="tel:+2349021983732" className="hover:text-primary transition-colors">
+                  +234 902 198 3732
                 </a>
               </p>
+              <p className="text-muted-foreground">Lagos, Nigeria</p>
             </div>
-          </motion.div>
+          </div>
         </div>
 
-        <motion.div
-          className="border-t border-white/5 mt-12 pt-8 text-center"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-        >
-          <p className="text-slate-500 text-sm">
-            © {currentYear} <span className="text-emerald-400 font-semibold">Expert Listing</span>. All rights reserved.
+        <div className="border-t border-gray-200 mt-8 pt-8 text-center">
+          <p className="text-sm text-muted-foreground">
+            © {currentYear} <span className="font-semibold text-foreground">Home Plug Realty</span>. All rights reserved.
           </p>
-        </motion.div>
+        </div>
       </div>
-
-      {/* Scroll to Top Button */}
-      <motion.button
-        onClick={scrollToTop}
-        className="fixed bottom-8 right-8 w-12 h-12 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-600 text-white shadow-lg shadow-emerald-500/20 flex items-center justify-center z-50"
-        initial={{ opacity: 0, scale: 0 }}
-        animate={{
-          opacity: showScrollTop ? 1 : 0,
-          scale: showScrollTop ? 1 : 0,
-        }}
-        whileHover={{ scale: 1.1, y: -2 }}
-        whileTap={{ scale: 0.95 }}
-        transition={{ duration: 0.2 }}
-      >
-        <ArrowUp className="w-5 h-5" />
-      </motion.button>
     </footer>
   );
 }
-

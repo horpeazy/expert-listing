@@ -2,9 +2,8 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
-import { Bed, Bath, Square, MapPin } from "lucide-react";
+import { Bed, Bath, Square, MapPin, Heart } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
 import type { Property } from "@/types";
 import { useState } from "react";
@@ -14,156 +13,115 @@ interface PropertyCardProps {
 }
 
 export function PropertyCard({ property }: PropertyCardProps) {
+  const [isFavorited, setIsFavorited] = useState(false);
   const primaryImage = property.images?.find((img) => img.is_primary) || property.images?.[0];
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    setMousePosition({
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top,
-    });
+  const handleFavoriteClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsFavorited(!isFavorited);
   };
 
   return (
     <Link href={`/properties/${property.id}`}>
-      <motion.div
-        className="relative bg-card rounded-2xl overflow-hidden border border-white/5 group"
-        whileHover={{ scale: 1.02, y: -5 }}
-        transition={{ duration: 0.3, ease: "easeOut" }}
-        onMouseMove={handleMouseMove}
-        style={{
-          transformStyle: "preserve-3d",
-        }}
-      >
-        {/* Glowing Border Effect */}
-        <motion.div
-          className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"
-          style={{
-            background: `radial-gradient(600px circle at ${mousePosition.x}px ${mousePosition.y}px, hsl(var(--primary-glow) / 0.15), transparent 40%)`,
-          }}
-        />
-
-        {/* Glow Border */}
-        <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-emerald-500/0 via-emerald-500/20 to-emerald-500/0 opacity-0 group-hover:opacity-100 transition-opacity" />
-
-        {/* Image */}
-        <div className="relative h-64 overflow-hidden">
+      <div className="group cursor-pointer">
+        {/* Image Container */}
+        <div className="relative aspect-[4/3] rounded-xl overflow-hidden mb-3 bg-gray-100">
           {primaryImage ? (
-            <motion.div
-              className="w-full h-full"
-              whileHover={{ scale: 1.1 }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
-            >
-              <Image
-                src={primaryImage.url}
-                alt={property.title}
-                fill
-                className="object-cover"
-              />
-            </motion.div>
+            <Image
+              src={primaryImage.url}
+              alt={property.title}
+              fill
+              className="object-cover transition-transform duration-300 group-hover:scale-105"
+            />
           ) : (
-            <div className="w-full h-full bg-muted flex items-center justify-center">
+            <div className="w-full h-full flex items-center justify-center">
               <span className="text-muted-foreground">No image</span>
             </div>
           )}
           
-          {/* Gradient Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-          
-          {/* Badges */}
-          <div className="absolute top-4 left-4 flex gap-2 z-10">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.1 }}
-            >
-              <Badge className="bg-black/50 backdrop-blur-sm text-white border-white/10">
-                {property.transaction_type === "sale" ? "For Sale" : "For Rent"}
+          {/* Favorite Button */}
+          <button
+            onClick={handleFavoriteClick}
+            className="absolute top-3 right-3 p-2 bg-white/90 hover:bg-white rounded-full transition-colors z-10 shadow-sm"
+          >
+            <Heart
+              className={`w-5 h-5 ${
+                isFavorited ? "fill-primary text-primary" : "text-gray-700"
+              }`}
+            />
+          </button>
+
+          {/* Featured Badge */}
+          {property.is_featured && (
+            <div className="absolute top-3 left-3">
+              <Badge className="bg-primary text-white border-0 shadow-sm">
+                Featured
               </Badge>
-            </motion.div>
-            {property.is_featured && (
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.2 }}
-              >
-                <Badge className="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white border-0 glow-emerald">
-                  Featured
-                </Badge>
-              </motion.div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
 
         {/* Content */}
-        <div className="p-6">
-          {/* Price */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.3 }}
-          >
-            <p className="text-3xl font-bold text-white mb-3">
-              {formatPrice(property.price)}
-              {property.transaction_type === "rent" && (
-                <span className="text-sm font-normal text-slate-400">/year</span>
-              )}
-            </p>
-          </motion.div>
-
-          {/* Title */}
-          <h3 className="font-semibold text-lg text-white mb-3 line-clamp-2 group-hover:text-emerald-400 transition-colors">
-            {property.title}
-          </h3>
-
-          {/* Location */}
-          <div className="flex items-center text-sm text-slate-400 mb-4">
-            <MapPin className="w-4 h-4 mr-1.5 text-emerald-500" />
-            <span className="line-clamp-1">{property.city}, {property.state}</span>
+        <div className="space-y-1">
+          {/* Location & Transaction Type */}
+          <div className="flex items-center justify-between">
+            <h3 className="font-semibold text-foreground line-clamp-1 flex-1">
+              {property.city}, {property.state}
+            </h3>
           </div>
+
+          {/* Title/Type */}
+          <p className="text-sm text-muted-foreground line-clamp-1">
+            {property.title}
+          </p>
 
           {/* Features */}
-          <div className="flex items-center gap-5 text-sm text-slate-400 pt-4 border-t border-white/5">
+          <div className="flex items-center gap-3 text-sm text-muted-foreground">
             {property.bedrooms && (
-              <motion.div
-                className="flex items-center gap-1.5"
-                whileHover={{ scale: 1.05 }}
-              >
+              <span className="flex items-center gap-1">
                 <Bed className="w-4 h-4" />
-                <span>{property.bedrooms}</span>
-              </motion.div>
+                {property.bedrooms}
+              </span>
             )}
             {property.bathrooms && (
-              <motion.div
-                className="flex items-center gap-1.5"
-                whileHover={{ scale: 1.05 }}
-              >
+              <span className="flex items-center gap-1">
                 <Bath className="w-4 h-4" />
-                <span>{property.bathrooms}</span>
-              </motion.div>
+                {property.bathrooms}
+              </span>
             )}
             {property.area_sqm && (
-              <motion.div
-                className="flex items-center gap-1.5"
-                whileHover={{ scale: 1.05 }}
-              >
+              <span className="flex items-center gap-1">
                 <Square className="w-4 h-4" />
-                <span>{property.area_sqm}m²</span>
-              </motion.div>
+                {property.area_sqm}m²
+              </span>
             )}
           </div>
-        </div>
 
-        {/* Floating Shadow */}
-        <motion.div
-          className="absolute -inset-4 rounded-2xl bg-emerald-500/10 blur-xl -z-10 opacity-0 group-hover:opacity-100 transition-opacity"
-          style={{
-            background: `radial-gradient(circle at ${mousePosition.x}px ${mousePosition.y}px, hsl(var(--primary-glow) / 0.2), transparent)`,
-          }}
-        />
-      </motion.div>
+          {/* Price */}
+          <div className="pt-1">
+            <p className="text-foreground font-semibold">
+              {formatPrice(property.price)}
+              {property.transaction_type === "rent" && (
+                <span className="text-sm font-normal text-muted-foreground"> /year</span>
+              )}
+            </p>
+          </div>
+        </div>
+      </div>
     </Link>
   );
 }
 
+export function PropertyCardSkeleton() {
+  return (
+    <div className="animate-pulse">
+      <div className="aspect-[4/3] rounded-xl bg-gray-200 mb-3" />
+      <div className="space-y-2">
+        <div className="h-5 bg-gray-200 rounded w-3/4" />
+        <div className="h-4 bg-gray-200 rounded w-1/2" />
+        <div className="h-4 bg-gray-200 rounded w-2/3" />
+        <div className="h-5 bg-gray-200 rounded w-1/3" />
+      </div>
+    </div>
+  );
+}

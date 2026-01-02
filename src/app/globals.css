@@ -1,39 +1,37 @@
 @import "tailwindcss";
 
 :root {
-  /* Luxury Dark Base */
-  --background: 0 0% 4%;
-  --foreground: 0 0% 95%;
+  /* Airbnb-inspired Light Theme */
+  --background: 0 0% 100%;
+  --foreground: 0 0% 13%;
   
-  /* Emerald Accent (Primary) */
-  --primary: 160 84% 39%;
+  /* Red Primary - Airbnb style (#FF385C) */
+  --primary: 348 94% 60%;
   --primary-foreground: 0 0% 100%;
-  --primary-glow: 160 84% 50%;
   
-  /* Gold Accent (Secondary) */
-  --secondary: 45 93% 47%;
-  --secondary-foreground: 0 0% 10%;
-  --gold: 45 93% 47%;
-  --gold-glow: 45 93% 58%;
+  /* Secondary Gray */
+  --secondary: 0 0% 45%;
+  --secondary-foreground: 0 0% 100%;
   
-  /* Surface Layers */
-  --card: 0 0% 7%;
-  --card-foreground: 0 0% 95%;
-  --card-hover: 0 0% 10%;
+  /* Surface Layers - Clean White */
+  --card: 0 0% 100%;
+  --card-foreground: 0 0% 13%;
   
   /* UI Elements */
-  --popover: 0 0% 7%;
-  --popover-foreground: 0 0% 95%;
-  --border: 0 0% 15%;
-  --input: 0 0% 12%;
-  --ring: 160 84% 39%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 0 0% 13%;
+  --border: 0 0% 90%;
+  --input: 0 0% 96%;
+  --ring: 348 94% 60%;
   --radius: 0.75rem;
   
-  /* Status Colors */
-  --muted: 0 0% 12%;
-  --muted-foreground: 0 0% 55%;
-  --accent: 0 0% 12%;
-  --accent-foreground: 0 0% 95%;
+  /* Muted/Accent */
+  --muted: 0 0% 96%;
+  --muted-foreground: 0 0% 45%;
+  --accent: 348 94% 97%;
+  --accent-foreground: 348 94% 60%;
+  
+  /* Destructive */
   --destructive: 0 84.2% 60.2%;
   --destructive-foreground: 0 0% 98%;
 }
@@ -46,11 +44,12 @@ body {
   background-color: hsl(var(--background));
   color: hsl(var(--foreground));
   font-feature-settings: "rlig" 1, "calt" 1;
-  font-family: var(--font-outfit), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: var(--font-outfit), -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", sans-serif;
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-playfair), Georgia, serif;
+  font-family: var(--font-outfit), -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 600;
 }
 
 /* Smooth scroll behavior */
@@ -58,14 +57,14 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Custom scrollbar */
+/* Clean scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: hsl(var(--background));
+  background: hsl(var(--muted));
 }
 
 ::-webkit-scrollbar-thumb {
@@ -74,28 +73,15 @@ html {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--primary));
+  background: hsl(var(--muted-foreground));
 }
 
-/* Glow effects */
-.glow-emerald {
-  box-shadow: 0 0 20px hsl(var(--primary-glow) / 0.3);
+/* Airbnb-style card hover */
+.card-hover {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.glow-gold {
-  box-shadow: 0 0 20px hsl(var(--gold-glow) / 0.3);
-}
-
-/* Glassmorphism */
-.glass {
-  backdrop-filter: blur(12px) saturate(180%);
-  background-color: hsl(var(--background) / 0.7);
-}
-
-/* Gradient text */
-.gradient-text {
-  background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--gold)));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.12);
 }

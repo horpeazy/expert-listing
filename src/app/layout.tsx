@@ -3,6 +3,8 @@ import { Outfit, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { SmoothScrollProvider } from "@/components/providers/smooth-scroll";
+import { AirbnbHeader } from "@/components/layout/airbnb-header";
+import { Footer } from "@/components/layout/footer";
 import { APP_NAME, APP_DESCRIPTION } from "@/lib/constants";
 
 const outfit = Outfit({
@@ -32,10 +34,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en">
       <body className={`${outfit.variable} ${playfair.variable} antialiased`}>
         <SmoothScrollProvider>
-          {children}
+          <AirbnbHeader />
+          <main className="pt-32">
+            {children}
+          </main>
+          <Footer />
           <Toaster />
         </SmoothScrollProvider>
       </body>

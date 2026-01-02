@@ -2,8 +2,6 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Header } from "@/components/layout/header";
-import { Footer } from "@/components/layout/footer";
 import { PackageCards } from "@/components/snagging/package-cards";
 import { BookingForm } from "@/components/snagging/booking-form";
 import { FAQ } from "@/components/snagging/faq";
@@ -26,9 +24,8 @@ export default function SnaggingPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-1">
+    <div className="min-h-screen">
+      <main>
         {/* Hero Section */}
         <section className="bg-gradient-to-br from-emerald-600 via-emerald-700 to-emerald-800 text-white py-32 relative overflow-hidden">
           {/* Animated Background Elements */}
@@ -124,7 +121,6 @@ export default function SnaggingPage() {
         {/* FAQ */}
         <FAQ />
       </main>
-      <Footer />
 
       {/* Booking Dialog */}
       <Dialog open={showBookingForm} onOpenChange={setShowBookingForm}>

@@ -1,5 +1,8 @@
-export const APP_NAME = "Expert Listing";
-export const APP_DESCRIPTION = "Find Your Perfect Home in Nigeria";
+export const APP_NAME = "Home Plug Realty";
+export const APP_DESCRIPTION = "Your reliable property solutions partner in Lagos, Nigeria - Professional rental, sales, and comprehensive real estate services";
+export const COMPANY_EMAIL = "info@homeplugrealty.ng";
+export const COMPANY_PHONE = "+234 902 198 3732";
+export const COMPANY_ADDRESS = "Lagos, Nigeria";
 
 export const SNAGGING_PACKAGES = {
   basic: {

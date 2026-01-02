@@ -2,8 +2,6 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { Header } from "@/components/layout/header";
-import { Footer } from "@/components/layout/footer";
 import { PropertyGrid } from "@/components/property/property-grid";
 import { Filters } from "@/components/search/filters";
 import { Button } from "@/components/ui/button";
@@ -75,72 +73,68 @@ function PropertiesContent() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-1 py-8">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h1 className="text-3xl font-bold mb-2">Find Properties</h1>
-              <p className="text-slate-600">
-                {loading ? "Searching..." : `${properties.length} properties found`}
-              </p>
-            </div>
-
-            <div className="flex items-center gap-4">
-              <Select
-                value={filters.sort}
-                onValueChange={(value) => setFilters({ ...filters, sort: value })}
-              >
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Sort by" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="newest">Newest First</SelectItem>
-                  <SelectItem value="price_low_to_high">Price: Low to High</SelectItem>
-                  <SelectItem value="price_high_to_low">Price: High to Low</SelectItem>
-                </SelectContent>
-              </Select>
-
-              {/* Mobile Filter Button */}
-              <Sheet open={mobileFiltersOpen} onOpenChange={setMobileFiltersOpen}>
-                <SheetTrigger asChild className="lg:hidden">
-                  <Button variant="outline">
-                    <SlidersHorizontal className="w-4 h-4 mr-2" />
-                    Filters
-                  </Button>
-                </SheetTrigger>
-                <SheetContent side="left" className="w-80 overflow-y-auto">
-                  <Filters
-                    filters={filters}
-                    onChange={setFilters}
-                    onReset={handleReset}
-                  />
-                </SheetContent>
-              </Sheet>
-            </div>
+    <div className="min-h-screen py-8">
+      <div className="container mx-auto px-4">
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h1 className="text-3xl font-bold mb-2">Find Properties</h1>
+            <p className="text-slate-600">
+              {loading ? "Searching..." : `${properties.length} properties found`}
+            </p>
           </div>
 
-          <div className="flex gap-8">
-            {/* Desktop Filters Sidebar */}
-            <aside className="hidden lg:block w-80 flex-shrink-0">
-              <div className="sticky top-24 bg-white rounded-lg border p-6">
+          <div className="flex items-center gap-4">
+            <Select
+              value={filters.sort}
+              onValueChange={(value) => setFilters({ ...filters, sort: value })}
+            >
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Sort by" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="newest">Newest First</SelectItem>
+                <SelectItem value="price_low_to_high">Price: Low to High</SelectItem>
+                <SelectItem value="price_high_to_low">Price: High to Low</SelectItem>
+              </SelectContent>
+            </Select>
+
+            {/* Mobile Filter Button */}
+            <Sheet open={mobileFiltersOpen} onOpenChange={setMobileFiltersOpen}>
+              <SheetTrigger asChild className="lg:hidden">
+                <Button variant="outline">
+                  <SlidersHorizontal className="w-4 h-4 mr-2" />
+                  Filters
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="w-80 overflow-y-auto">
                 <Filters
                   filters={filters}
                   onChange={setFilters}
                   onReset={handleReset}
                 />
-              </div>
-            </aside>
-
-            {/* Properties Grid */}
-            <div className="flex-1">
-              <PropertyGrid properties={properties} loading={loading} />
-            </div>
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
-      </main>
-      <Footer />
+
+        <div className="flex gap-8">
+          {/* Desktop Filters Sidebar */}
+          <aside className="hidden lg:block w-80 flex-shrink-0">
+            <div className="sticky top-24 bg-white rounded-lg border p-6">
+              <Filters
+                filters={filters}
+                onChange={setFilters}
+                onReset={handleReset}
+              />
+            </div>
+          </aside>
+
+          {/* Properties Grid */}
+          <div className="flex-1">
+            <PropertyGrid properties={properties} loading={loading} />
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

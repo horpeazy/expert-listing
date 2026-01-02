@@ -29,7 +29,6 @@ const testProperties = [
     price: 85000000,
     bedrooms: 4,
     bathrooms: 5,
-    toilets: 6,
     area_sqm: 350,
     address: "Lekki Phase 1",
     city: "Lekki",
@@ -49,7 +48,6 @@ const testProperties = [
     price: 3500000,
     bedrooms: 3,
     bathrooms: 3,
-    toilets: 4,
     area_sqm: 180,
     address: "Ahmadu Bello Way",
     city: "Victoria Island",
@@ -69,7 +67,6 @@ const testProperties = [
     price: 750000000,
     bedrooms: 5,
     bathrooms: 6,
-    toilets: 8,
     area_sqm: 600,
     address: "Banana Island Road",
     city: "Ikoyi",
@@ -84,12 +81,11 @@ const testProperties = [
     title: "Modern 2 Bedroom Flat in Ikeja",
     slug: "modern-2-bedroom-flat-ikeja",
     description: "Newly built 2 bedroom apartment in a secure estate. Perfect for young professionals. Features include ample parking, 24hr power supply, and proximity to Ikeja City Mall.",
-    property_type: "flat",
+    property_type: "apartment",
     transaction_type: "rent",
     price: 1800000,
     bedrooms: 2,
     bathrooms: 2,
-    toilets: 3,
     area_sqm: 120,
     address: "Oregun Road",
     city: "Ikeja",
@@ -104,12 +100,11 @@ const testProperties = [
     title: "Commercial Office Space in Abuja",
     slug: "commercial-office-space-abuja",
     description: "Premium office space in the heart of Abuja's business district. Ideal for corporate headquarters. Features include central air conditioning, elevators, backup power, and ample parking.",
-    property_type: "commercial",
+    property_type: "studio",
     transaction_type: "rent",
     price: 12000000,
     bedrooms: 0,
     bathrooms: 4,
-    toilets: 6,
     area_sqm: 450,
     address: "Central Business District",
     city: "Abuja",
@@ -149,25 +144,53 @@ async function seedDatabase() {
   try {
     console.log("🌱 Starting database seeding...\n");
 
-    // First, create a test user (or use existing)
-    console.log("Creating test user...");
-    const { data: authData, error: authError } = await supabase.auth.admin.createUser({
-      email: "test@expertlisting.ng",
-      password: "Test123456!",
-      email_confirm: true,
-    });
+    // Check if tables exist first
+    console.log("Checking database tables...");
+    const { error: tableCheckError } = await supabase
+      .from("properties")
+      .select("id")
+      .limit(1);
 
-    if (authError && !authError.message.includes("already registered")) {
-      throw authError;
+    if (tableCheckError && tableCheckError.message.includes("does not exist")) {
+      console.error("\n❌ Error: Database tables don't exist!");
+      console.error("\n📋 You need to run the database migration first:");
+      console.error("   1. Go to https://supabase.com/dashboard");
+      console.error("   2. Select your project");
+      console.error("   3. Go to SQL Editor");
+      console.error("   4. Copy and run the contents of: supabase/migrations/001_initial_schema.sql\n");
+      process.exit(1);
     }
 
-    const userId = authData?.user?.id || (await supabase.auth.admin.listUsers()).data.users[0]?.id;
+    console.log("✓ Database tables exist\n");
 
-    if (!userId) {
-      throw new Error("Could not find or create test user");
+    // Try to get an existing user or use a placeholder
+    console.log("Looking for existing users...");
+    let userId: string;
+
+    const { data: existingUsers } = await supabase.auth.admin.listUsers();
+    
+    if (existingUsers && existingUsers.users && existingUsers.users.length > 0) {
+      userId = existingUsers.users[0].id;
+      console.log(`✓ Using existing user: ${userId}\n`);
+    } else {
+      // Try to create a new user
+      console.log("No users found, creating test user...");
+      const { data: newUser, error: createError } = await supabase.auth.admin.createUser({
+        email: "test@expertlisting.ng",
+        password: "Test123456!",
+        email_confirm: true,
+      });
+
+      if (createError) {
+        console.error("⚠️  Could not create user, using placeholder UUID");
+        console.error("   You may need to manually create a user via the signup page first.\n");
+        // Use a placeholder UUID - properties will be orphaned but visible
+        userId = "00000000-0000-0000-0000-000000000000";
+      } else {
+        userId = newUser.user!.id;
+        console.log(`✓ Test user created: ${userId}\n`);
+      }
     }
-
-    console.log(`✓ Test user ready: ${userId}\n`);
 
     // Insert properties
     console.log("Inserting test properties...");

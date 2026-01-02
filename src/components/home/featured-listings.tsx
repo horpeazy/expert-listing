@@ -1,22 +1,23 @@
 "use client";
 
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
-import { FadeIn, StaggerChildren, StaggerItem } from "@/components/animations/reveal";
-import { motion } from "framer-motion";
-import { PropertyCard } from "@/components/property/property-card";
-import { useEffect, useState } from "react";
+import { PropertyCard, PropertyCardSkeleton } from "@/components/property/property-card";
+import { useEffect, useState, useRef } from "react";
 import type { Property } from "@/types";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export function FeaturedListings() {
   const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
 
   useEffect(() => {
     async function fetchFeaturedProperties() {
       try {
-        const response = await fetch("/api/properties?is_featured=true&limit=3");
+        const response = await fetch("/api/properties?is_featured=true&limit=6");
         if (response.ok) {
           const data = await response.json();
           setProperties(data.properties || []);
@@ -31,115 +32,133 @@ export function FeaturedListings() {
     fetchFeaturedProperties();
   }, []);
 
-  return (
-    <section className="py-32 bg-background relative overflow-hidden">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute inset-0" style={{
-          backgroundImage: `radial-gradient(circle at 1px 1px, hsl(var(--primary)) 1px, transparent 0)`,
-          backgroundSize: '40px 40px'
-        }} />
-      </div>
+  useEffect(() => {
+    const updateScrollButtons = () => {
+      if (scrollContainerRef.current) {
+        const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
+        setCanScrollLeft(scrollLeft > 0);
+        setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
+      }
+    };
 
-      <div className="container mx-auto px-4 relative z-10">
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-16">
-          <FadeIn>
-            <div>
-              <h2 className="text-4xl md:text-5xl font-bold mb-3 font-playfair gradient-text">
-                Featured Properties
-              </h2>
-              <p className="text-slate-400 text-lg">
-                Discover our hand-picked selection of premium properties
-              </p>
-            </div>
-          </FadeIn>
-          <FadeIn delay={0.2}>
-            <Link href="/properties">
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button 
-                  variant="outline" 
-                  className="border-emerald-500/30 hover:border-emerald-500 hover:bg-emerald-500/10 text-emerald-400 mt-6 md:mt-0"
-                >
-                  View All
-                  <motion.div
-                    animate={{ x: [0, 5, 0] }}
-                    transition={{ duration: 1.5, repeat: Infinity }}
-                  >
-                    <ArrowRight className="w-4 h-4 ml-2" />
-                  </motion.div>
-                </Button>
-              </motion.div>
-            </Link>
-          </FadeIn>
+    updateScrollButtons();
+    const container = scrollContainerRef.current;
+    container?.addEventListener("scroll", updateScrollButtons);
+    window.addEventListener("resize", updateScrollButtons);
+
+    return () => {
+      container?.removeEventListener("scroll", updateScrollButtons);
+      window.removeEventListener("resize", updateScrollButtons);
+    };
+  }, [properties]);
+
+  const scroll = (direction: "left" | "right") => {
+    if (scrollContainerRef.current) {
+      const scrollAmount = 400;
+      scrollContainerRef.current.scrollBy({
+        left: direction === "left" ? -scrollAmount : scrollAmount,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  return (
+    <section className="py-12 bg-white">
+      <div className="container mx-auto px-6">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h2 className="text-xl font-semibold text-foreground">
+              Featured properties in Lagos
+            </h2>
+          </div>
+          <Link href="/properties" className="hidden md:block">
+            <Button variant="ghost" className="text-sm font-semibold hover:bg-gray-100 rounded-full">
+              Show all
+            </Button>
+          </Link>
         </div>
 
-        {/* Property Cards or Loading Skeletons */}
-        <StaggerChildren className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {loading ? (
-            // Loading Skeletons
-            [1, 2, 3].map((i) => (
-              <StaggerItem key={i}>
-                <motion.div
-                  className="bg-card rounded-2xl overflow-hidden border border-white/5 group"
-                  whileHover={{ y: -10 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <div className="h-64 bg-gradient-to-br from-muted to-card animate-pulse relative overflow-hidden">
-                    <motion.div
-                      className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent"
-                      animate={{ x: ["-100%", "100%"] }}
-                      transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                    />
-                  </div>
-                  <div className="p-6 space-y-3">
-                    <div className="h-6 bg-muted rounded animate-pulse" />
-                    <div className="h-4 bg-muted rounded w-3/4 animate-pulse" />
-                    <div className="h-4 bg-muted rounded w-1/2 animate-pulse" />
-                  </div>
-                </motion.div>
-              </StaggerItem>
-            ))
-          ) : properties.length > 0 ? (
-            // Actual Property Cards
-            properties.map((property) => (
-              <StaggerItem key={property.id}>
-                <PropertyCard property={property} />
-              </StaggerItem>
-            ))
-          ) : (
-            // No Properties Message
-            <div className="col-span-full text-center py-16">
-              <p className="text-slate-400 text-lg mb-6">
-                No featured properties available at the moment.
-              </p>
-              <Link href="/properties">
-                <Button variant="outline" className="border-emerald-500/30 hover:border-emerald-500 hover:bg-emerald-500/10 text-emerald-400">
-                  Browse All Properties
-                </Button>
-              </Link>
-            </div>
+        {/* Carousel */}
+        <div className="relative group">
+          {/* Left Arrow */}
+          {!loading && canScrollLeft && (
+            <button
+              onClick={() => scroll("left")}
+              className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 bg-white border border-gray-300 rounded-full shadow-md flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:scale-110"
+              aria-label="Scroll left"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
           )}
-        </StaggerChildren>
 
-        {!loading && properties.length > 0 && (
-          <FadeIn delay={0.6}>
-            <div className="text-center mt-16">
-              <Link href="/properties">
-                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                  <Button 
-                    size="lg" 
-                    className="bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white shadow-lg shadow-emerald-500/20 border-0"
-                  >
+          {/* Right Arrow */}
+          {!loading && canScrollRight && (
+            <button
+              onClick={() => scroll("right")}
+              className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 bg-white border border-gray-300 rounded-full shadow-md flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:scale-110"
+              aria-label="Scroll right"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          )}
+
+          {/* Properties Container */}
+          <div
+            ref={scrollContainerRef}
+            className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth"
+            style={{
+              scrollbarWidth: "none",
+              msOverflowStyle: "none",
+            }}
+          >
+            {loading ? (
+              // Loading Skeletons
+              [1, 2, 3, 4].map((i) => (
+                <div key={i} className="flex-shrink-0 w-[300px]">
+                  <PropertyCardSkeleton />
+                </div>
+              ))
+            ) : properties.length > 0 ? (
+              // Actual Property Cards
+              properties.map((property) => (
+                <div key={property.id} className="flex-shrink-0 w-[300px]">
+                  <PropertyCard property={property} />
+                </div>
+              ))
+            ) : (
+              // No Properties Message
+              <div className="w-full text-center py-16">
+                <p className="text-muted-foreground text-lg mb-6">
+                  No featured properties available at the moment.
+                </p>
+                <Link href="/properties">
+                  <Button variant="outline" className="rounded-full">
                     Browse All Properties
-                    <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
-                </motion.div>
-              </Link>
-            </div>
-          </FadeIn>
+                </Link>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Mobile Show All Link */}
+        {!loading && properties.length > 0 && (
+          <div className="mt-6 md:hidden">
+            <Link href="/properties">
+              <Button variant="outline" className="w-full rounded-full">
+                Show all properties
+              </Button>
+            </Link>
+          </div>
         )}
       </div>
+
+      <style jsx>{`
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+      `}</style>
     </section>
   );
 }
-
